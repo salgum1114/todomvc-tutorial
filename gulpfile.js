@@ -11,7 +11,8 @@ gulp.task('build', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch(['/**/*.js', '/*.js'], ['bundle']);
+	//gulp.watch(['examples/**/*.js', '!examples/js/*.js'], ['example']);
+	gulp.watch('src/**/*.js', ['build']);
 });
 
 gulp.task('default', ['build', 'example']);
