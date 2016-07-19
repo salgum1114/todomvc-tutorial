@@ -2,20 +2,18 @@
 
 var React = require('react');
 var ReactDom = require('react-dom');
-
-var Router = require('react-router').Router;
-var Route = require('react-router').Route;
-
 var TodoItem = require('./component/todoitem');
 var Footer = require('./component/footer');
-
+var Router = require('react-router').Router;
+var Route = require('react-router').Route;
+var HashHistory = HashHistory || require('react-router').hashHistory;
 var ENTER_KEY = 13;
-
 
 var Main = React.createClass({
     getInitialState: function() {
         return {
-            title: '',
+            todos: [],
+            newTodo: '',
             count: 0
         };
     },
@@ -23,28 +21,40 @@ var Main = React.createClass({
         if(event.keyCode !== ENTER_KEY) {
             return;
         }
-        var val = this.state.title.trim();
-        var count = this.state.count;
-        console.log(val);
-        if(val) {
-            this.setState({title: val});
-            this.setState({count: ++count});
-            this.setState({title: ''});
-        }
+        event.preventDefault();
+        var nextTodo = this.state.todos.concat([this.state.newTodo]);
+        this.setState({todos: nextTodo});
+        this.setState({count: ++this.state.count});
+        this.setState({newTodo: ''});
     },
     handleChange: function(event) {
-        this.setState({title: event.target.value});
+        this.setState({newTodo: event.target.value});
     },
     render: function() {
+        var ulStyle = {
+            listStyle: 'none'
+        };
+        var createTodo = function(todo) {
+            return (
+                <TodoItem key={todo.id} todo={todo}/>
+            );
+        };
+        var todoList = (
+            <ul style={ulStyle}>
+                {this.state.todos.map(createTodo)}
+            </ul>
+        );
+
+        var footer = <Footer count={this.state.count} />;
+        
         return (
             <div>
                 <header>
                     <h1>todos</h1>
-                    <input value={this.state.title} onKeyDown={this.handleNewTodoKeyDown} onChange={this.handleChange} placeholder="What needs to be done?" autoFocus={true}>
-                    </input>
+                    <input value={this.state.newTodo} onKeyDown={this.handleNewTodoKeyDown} onChange={this.handleChange} placeholder="What needs to be done?" autoFocus={true} />
                 </header>
-                <TodoItem title={this.state.title} />
-                <Footer count={this.state.count} />
+                {todoList}
+                {footer}
             </div>
         );
     }

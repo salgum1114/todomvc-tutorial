@@ -5,16 +5,15 @@ var PropTypes = require('react').PropTypes;
 
 var TodoItem = React.createClass({
     displayName: 'TodoItem',
-    propTypes: {
-        title: PropTypes.string
-    },
     render: function() {
         return (
             <li>
                 <div>
+                    <input type="checkbox"/>
                     <label>
-                        {this.props.title}
+                        {this.props.todo}
                     </label>
+                    <button>delete</button>
                 </div>
             </li>
         );
