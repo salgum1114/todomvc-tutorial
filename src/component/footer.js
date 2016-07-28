@@ -12,19 +12,22 @@ var Footer = React.createClass({
 		return {count: 0};
 	},
     render: function() {
+        var clearButton = (
+            <button className="clear-completed" onClick={this.props.allDeleteCompleted}>Clear completed</button>
+        );
+
         return (
-            <div>
-                <footer>
-                    <span>
-                        {this.props.count} items left
-                    </span>
-                    <ul>
-                        <li onClick="{this.onAllClick}"><a href="#/">All</a></li>
-                        <li onClick="{this.onActiveClick}"><a href="#/active">Active</a></li>
-                        <li onClick="{this.onCompleteClick}"><a href="#/complete">Complete</a></li>
-                    </ul>
-                </footer>
-            </div>
+            <footer className="footer">
+                <span className="todo-count">
+                    {this.props.count} items left
+                </span>
+                <ul className="filters">
+                    <li><a href="#/">All</a></li>
+                    <li><a href="#/active">Active</a></li>
+                    <li><a href="#/complete">Complete</a></li>
+                </ul>
+                {clearButton}
+            </footer>
         );
     }
 });
