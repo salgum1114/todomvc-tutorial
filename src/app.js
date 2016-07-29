@@ -21,6 +21,9 @@ var Main = React.createClass({
         }
         event.preventDefault();
         var newTodo = this.state.newTodo;
+        if(newTodo === '') {
+            return;
+        }
         var id = this.uuid();
         var newTodos = this.state.todos.concat({
             title: newTodo,
@@ -52,7 +55,7 @@ var Main = React.createClass({
     },
     handleDeleteCompleted: function() {
         var newTodos = this.state.todos.filter(function(todo) {
-            return !todo.completed; 
+            return !todo.completed;
         });
         this.setState({
             todos: newTodos,
@@ -61,7 +64,6 @@ var Main = React.createClass({
     },
     handleDeleteTodo: function(todo) {
         var newTodos = this.state.todos.filter(function(candidate) {
-            console.log("Test : ", candidate !== todo);
             return candidate !== todo;
         });
         this.setState({
@@ -102,7 +104,8 @@ var Main = React.createClass({
                     todo={todo.title} 
                     completed={todo.completed}
                     completedCheck={this.handleChecked.bind(this, todo)} 
-                    deleteTodo={this.handleDeleteTodo.bind(this, todo)}/>
+                    deleteTodo={this.handleDeleteTodo.bind(this, todo)}
+                    />
             );
         };
 

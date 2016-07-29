@@ -1,27 +1,55 @@
 var React = require('react');
 var ReactDom = require('react-dom');
 
-var PropTypes = require('react').PropTypes;
-
+var TodoItemEdit = require('./todoitemedit')
+var classNames = require('classnames');
 var TodoItem = React.createClass({
     displayName: 'TodoItem',
     getInitialState: function() {
         return {
-            editTodo: this.props.todo
+            editTodo: this.props.todo,
+            isEditing: false
         }
     },
-    componentDidMount: function() {
-        this.refs.editText.value = this.state.editTodo;
-    },
     handleEdit: function() {
+        if(!this.state.isEditing) {
+            this.setState({isEditing: true}); 
+            var editField = ReactDom.findDOMNode(this.refs.editField);
+            editField.focus();
+        }
         this.setState({editTodo: this.state.editTodo});
     },
-    handChange: function(event) {
-        this.setState({editTodo: event.target.value});
+    handleChange: function(event) {
+        this.setState({editText: event.target.value});
+    },
+    handleEditTodoKeyDown: function(event) {
+        if(event.which === 13) {
+            var val = event.target.value;
+            if(val) {
+                this.setState({editTodo: event.target.value});
+                this.setState({isEditing: this.handleCancel()});
+            } else {
+                this.props.deleteTodo();
+            }
+        } else if(event.which === 27) {
+            this.setState({isEditing: this.handleCancel()});
+        }
+    },
+    handleCancel: function() {
+        this.setState({isEditing: false});
+    },
+    shouldComponentUpdate: function (nextProps, nextState) {
+        return (
+            nextProps.todo === this.state.editTodo ||
+            nextState.editTodo === this.state.editTodo
+        );
     },
     render: function() {
         return (
-            <li>
+            <li className={classNames({
+					completed: this.props.completed,
+					editing: this.state.isEditing
+				})}>
                 <div className="view">
                     <input 
                         className="toggle" 
@@ -29,15 +57,17 @@ var TodoItem = React.createClass({
                         onChange={this.props.completedCheck} 
                         checked={this.props.completed}/>
                     <label onDoubleClick={this.handleEdit}>
-                        {this.props.todo}
+                        {this.state.editTodo}
                     </label>
                     <button className="destroy" onClick={this.props.deleteTodo}/>
                 </div>
-                <input 
-                    ref="editText"
-                    className="edit" 
+                <input
+                    ref="editField"
+                    className="edit"
                     defaultValue={this.state.editTodo} 
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange}
+                    onKeyDown={this.handleEditTodoKeyDown}
+                    />
             </li>
         );
     }
