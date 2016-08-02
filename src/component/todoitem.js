@@ -1,7 +1,6 @@
 var React = require('react');
 var ReactDom = require('react-dom');
 
-var TodoItemEdit = require('./todoitemedit')
 var classNames = require('classnames');
 var TodoItem = React.createClass({
     displayName: 'TodoItem',
@@ -11,16 +10,21 @@ var TodoItem = React.createClass({
             isEditing: false
         }
     },
+    handleSubmit: function (event) {
+        this.setState({isEditing: false});
+	},
     handleEdit: function() {
         if(!this.state.isEditing) {
             this.setState({isEditing: true}); 
-            var editField = ReactDom.findDOMNode(this.refs.editField);
-            editField.focus();
+            this.setState({editTodo: this.state.editTodo});
+        } else {
+            this.setState({isEditing: false});
         }
-        this.setState({editTodo: this.state.editTodo});
     },
     handleChange: function(event) {
-        this.setState({editText: event.target.value});
+        if(this.state.isEditing) {
+            this.setState({editText: event.target.value});
+        } 
     },
     handleEditTodoKeyDown: function(event) {
         if(event.which === 13) {
@@ -38,11 +42,11 @@ var TodoItem = React.createClass({
     handleCancel: function() {
         this.setState({isEditing: false});
     },
-    shouldComponentUpdate: function (nextProps, nextState) {
-        return (
-            nextProps.todo === this.state.editTodo ||
-            nextState.editTodo === this.state.editTodo
-        );
+    componentDidUpdate: function(prevProps) {
+        if(this.state.isEditing) {
+            var editField = ReactDom.findDOMNode(this.refs.editField);
+            editField.focus();
+        }
     },
     render: function() {
         return (
@@ -65,6 +69,7 @@ var TodoItem = React.createClass({
                     ref="editField"
                     className="edit"
                     defaultValue={this.state.editTodo} 
+                    onBlur={this.handleSubmit}
                     onChange={this.handleChange}
                     onKeyDown={this.handleEditTodoKeyDown}
                     />

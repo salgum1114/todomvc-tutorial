@@ -10,10 +10,20 @@ var ENTER_KEY = 13;
 var Main = React.createClass({
     getInitialState: function() {
         return {
+            nowShowing: 'all',
             todos: [],
             newTodo: '',
             count: 0
         };
+    },
+    componentDidMount: function() {
+        var setState = this.setState;
+        var router = Router({
+            '/': setState.bind(this, {nowShowing: 'all'}),
+            '/active': setState.bind(this, {nowShowing: 'active'}),
+            '/completed': setState.bind(this, {nowShowing: 'completed'})
+        });
+        router.init('/');
     },
     handleNewTodoKeyDown: function(event) {
         if(event.keyCode !== ENTER_KEY) {
@@ -72,10 +82,13 @@ var Main = React.createClass({
         });
     },
     handleChecked: function(todo) {
+        console.log('test');
         var newTodos = this.state.todos.map(function(todoToToggle) {
             if(todo.completed === true) {
+                console.log('2');
                 todo.completed = false;
             } else {
+                console.log('3');
                 todo.completed = true;
             }
             return todoToToggle;
@@ -108,7 +121,16 @@ var Main = React.createClass({
                     />
             );
         };
-
+        var shownTodos = this.state.todos.filter(function(todo) {
+            switch(this.state.nowShowing) {
+                case 'all':
+                    return true;
+                case 'active':
+                    return !todo.completed;
+                default:
+                    return todo.completed;
+            }
+        }, this);
         var todoItems;
         var footer;
         var totalCount = this.state.todos.length;
@@ -125,12 +147,15 @@ var Main = React.createClass({
                         onChange={this.handleAllChecked} 
                         checked={activeCount === 0}/>
                     <ul className="todo-list">
-                        {this.state.todos.map(createTodo, this)}
+                        {shownTodos.map(createTodo, this)}
                     </ul>
                 </section>
             );
 
-            footer = <Footer count={this.state.count} allDeleteCompleted={this.handleDeleteCompleted}/>;
+            footer = <Footer 
+                        count={this.state.count} 
+                        nowShowing={this.state.nowShowing}
+                        allDeleteCompleted={this.handleDeleteCompleted}/>;
         }
 
         return (
