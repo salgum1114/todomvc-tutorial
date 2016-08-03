@@ -5,9 +5,15 @@
             "name": "Launch Chrome against localhost, with sourcemaps",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:3000",
+            "url": "http://localhost:8080",
+            "runtimeArgs": [
+                "--new-window", //Open in new window
+                "--user-data-dir=${workspaceRoot}/out/",
+                "--remote-debugging-port=9222" //Open in port 9222 (standard chrome debug port)
+            ],
+            "diagnosticLogging": true,
             "sourceMaps": true,
-            "webRoot": "${workspaceRoot}/build/"
+            "webRoot": "${workspaceRoot}/src"
         },
         {
             "name": "Attach to Chrome, with sourcemaps",
@@ -15,7 +21,7 @@
             "request": "attach",
             "port": 9222,
             "sourceMaps": true,
-            "webRoot": "${workspaceRoot}/build/"
+            "webRoot": "${workspaceRoot}/src"
         }
     ]
 }
