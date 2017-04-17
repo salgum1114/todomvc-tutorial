@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack",
-    "http-server": "http-server ./ -p 3000 -o /index.html",
-    "ws": "ws -d ./ -p 3000",
-    "start": "webpack-dev-server --hot"
+    "http-server": "http-server ./ -p 5000 -o /index.html",
+    "start": "npm run http-server"
   },
   "repository": {
     "type": "git",
